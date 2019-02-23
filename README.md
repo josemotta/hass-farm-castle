@@ -1,3 +1,3 @@
-[![Travis branch](https://api.travis-ci.com/josemotta/hass-farm-cast.svg?token=sksD8Nuz2yocxUGUscw8&branch=master)]
-# hass-farm-cast
+![Travis branch](https://api.travis-ci.org/josemotta/hass-farm-castle.svg?branch=master)
+# hass-farm-castle
 Hass farm - castle tower - water tank
