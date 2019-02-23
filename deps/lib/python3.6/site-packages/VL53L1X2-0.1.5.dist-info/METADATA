@@ -1,0 +1,129 @@
+Metadata-Version: 2.1
+Name: VL53L1X2
+Version: 0.1.5
+Summary: vl53l1x distance sensor driver for Raspberry Pi
+Home-page: https://github.com/josemotta/vl53l1x-python
+Maintainer: Phil Howard/Nagy Attila/Jose Motta
+Maintainer-email: phil@pimoroni.com
+License: UNKNOWN
+Platform: UNKNOWN
+Requires: smbus2
+Requires-Dist: smbus2
+
+# vl53l1x-python
+
+Revised Python library for the VL53L1X Laser Ranger.
+
+# Installing
+
+    sudo pip3 install VL53L1X2  
+
+# Usage
+
+    '''See tests/use_sensor_pypi.py for details.'''
+
+    import VL53L1X2
+
+      ...
+
+    # I2C addresses for each sensor
+    ADDRESS_1 = 0x29
+
+    # GPIO pins connected to the sensors SHUTX pins
+    SHUTX_PIN_1 = 16
+
+    # Arbitrary sensor id-s, should be unique for each sensor
+    sensor_id_1 = 1111
+
+    GPIO.setwarnings(False)
+
+    # Setup GPIO for shutdown pins on
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(SHUTX_PIN_1, GPIO.OUT)
+
+    # Reset sensor
+    GPIO.output(SHUTX_PIN_1, GPIO.LOW)
+    time.sleep(0.01)
+    GPIO.output(SHUTX_PIN_1, GPIO.HIGH)
+    time.sleep(0.01)
+
+    # Init VL53L1X sensor
+    tof = VL53L1X2.VL53L1X()
+    tof.open()
+    tof.add_sensor(sensor_id_1, ADDRESS_1)
+
+    tof.start_ranging(sensor_id_1, 1)
+
+    for _ in range(0,20):
+    distance_mm_1 = tof.get_distance(sensor_id_1)
+    print("Time: {}\tSensor 1: {} mm".format(datetime.utcnow().strftime("%S.%f"), distance_mm_1))
+    time.sleep(0.001)
+    tof.stop_ranging(sensor_id_1)
+
+    # Clean-up
+    tof.close()
+
+    GPIO.output(SHUTX_PIN_1, GPIO.LOW)
+
+0.1.5
+-----
+
+* @josemotta ported to python 3.6 as part of homeassistant component development.
+
+Please see basic sample:
+
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.helpers.entity import Entity
+
+REQUIREMENTS = ['smbus2==0.2.2', 'VL53L1X2==0.1.5']
+
+def setup_platform(hass, config, add_devices, discovery_info=None):
+    """Setup the sensor platform."""
+    add_devices([TofSensor()])
+
+
+class TofSensor(Entity):
+    """Representation of a Sensor."""
+
+    def __init__(self):
+        """Initialize the sensor."""
+        self._state = None
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return 'VL53L1X'
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement."""
+        return TEMP_CELSIUS
+
+    def update(self):
+        """Fetch new state data for the sensor.
+
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        self._state = 23
+
+0.0.3
+-----
+
+* @NagyAttila upgrade focusing on working with more than 1 range sensors, also changed quit a lot to make it bit more robust.
+
+0.0.2
+-----
+
+* Improved search for .so file to pick up arch-specific files.
+
+0.0.1
+-----
+
+* Initial release.
+
+

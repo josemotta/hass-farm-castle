@@ -1,0 +1,196 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets (Castelo)
+  latitude: -22.993461190285846
+  longitude: -43.2733427577088
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 80
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Sao_Paulo
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+introduction:
+
+# Enables the frontend
+frontend:
+  themes: !include themes.yaml
+
+lovelace:
+  mode: yaml
+
+# Enables configuration UI
+config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+http:
+  api_password: !secret http_password
+
+#iPhone
+#ios:
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+#updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+#  reporting: False
+
+# Discover some devices automatically
+#discovery:
+
+# Enable diagnostic tools
+system_health:
+
+# Add hassio menu on the left
+hassio:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+#conversation:
+
+# Recorder setup for main sensors only
+recorder:
+  purge_keep_days: 7
+  include:
+    domains:
+      - sensor
+    entities:
+      - sensor.water_level
+      - sensor.water_level_mm
+      - sensor.vl53l1x
+      - sensor.htu21d_sensor_temperature
+      - sensor.htu21d_sensor_humidity
+      - sensor.bh1750_light_sensor
+      - sensor.processor_use
+      - sensor.memory_free
+      - sensor.network_in_wlan0
+      - sensor.network_out_wlan0
+      - sensor.disk_use_percent_home
+  exclude:
+    domains:
+      - automation
+      - weblink
+      - updater
+    entities:
+      - sun.sun
+
+# Enables support for tracking state changes over time
+history:
+  use_include_order: true
+  include:
+    domains:
+      - sensor
+    entities:
+      - sensor.water_level
+      - sensor.water_level_mm
+      - sensor.vl53l1x
+      - sensor.htu21d_sensor_temperature
+      - sensor.htu21d_sensor_humidity
+      - sensor.bh1750_light_sensor
+      - sensor.processor_use
+      - sensor.memory_free
+      - sensor.network_in_wlan0
+      - sensor.network_out_wlan0
+      - sensor.disk_use_percent_home
+  exclude:
+    domains:
+      - automation
+      - weblink
+      - persistent_notification
+    entities:
+      - sun.sun
+#      - sensor.yr_symbol
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Sensors
+sensor:
+#  - platform: yr
+  - platform: htu21d
+  - platform: bh1750
+  - platform: systemmonitor
+    resources:
+      - type: processor_use
+      - type: memory_free
+      - type: network_in
+        arg: wlan0
+      - type: network_out
+        arg: wlan0
+      - type: disk_use_percent
+        arg: /home
+  - platform: tof
+  - platform: template
+    sensors:
+      water_level_mm:
+        friendly_name: "Water Level"
+        unit_of_measurement: "mm"
+        value_template: "{{ (5000 - states('sensor.vl53l1x')|float) | round(0)}}"
+      water_level:
+        friendly_name: "Water Level"
+        unit_of_measurement: "%"
+        value_template: "{{ ((5000 - states('sensor.vl53l1x')|float) / 50) | round(1)}}"
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+zone:
+  - name: Home
+    latitude: -22.99361111
+    longitude: -43.27277778
+    radius: 110
+    icon: mdi:shield-home-outline
+  - name: Bloco-0
+    latitude: -22.994375576861216
+    longitude: -43.27282276642885
+    radius: 15
+    icon: mdi:numeric-0-box-outline
+  - name: Bloco-1
+    latitude: -22.994178982919866
+    longitude: -43.27303517849277
+    radius: 15
+    icon: mdi:numeric-1-box-outline
+  - name: Bloco-2
+    latitude: -22.99388889
+    longitude: -43.27305556
+    radius: 15
+    icon: mdi:numeric-2-box-outline
+  - name: Piscina
+    latitude: -22.99407448095864
+    longitude: -43.272034983191794
+    radius: 20
+    icon: mdi:pool
+  - name: Castelo
+    latitude: -22.993461190285846
+    longitude: -43.2733427577088
+    radius: 10
+    icon: mdi:tower-fire
+  - name: Bloco-3
+    latitude: -22.99329712610848
+    longitude: -43.272943561247736
+    radius: 15
+    icon: mdi:numeric-3-box-outline
+  - name: Bloco-4
+    latitude: -22.992799360779465
+    longitude: -43.272665924789806
+    radius: 15
+    icon: mdi:numeric-4-box-outline
+  - name: Bloco-5
+    latitude: -22.993269023429185
+    longitude: -43.27229423262009
+    radius: 20
+    icon: mdi:numeric-5-box-outline

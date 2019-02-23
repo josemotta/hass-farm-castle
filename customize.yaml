@@ -1,0 +1,16 @@
+sensor.htu21d_sensor_temperature:
+  icon: mdi:thermometer
+sensor.htu21d_sensor_humidity:
+  icon: mdi:weather-rainy
+sensor.water_level:
+  icon: mdi:waves
+sensor.water_level_mm:
+  #icon: mdi:arrow-expand-vertical
+  icon: mdi:arrow-collapse-up
+sensor.vl53l1x:
+  icon: mdi:arrow-collapse-down
+  friendly_name: "VL53L1X Sensor_tof"
+sensor.network_in_wlan0:
+  icon: mdi:signal-variant
+sensor.network_out_wlan0:
+  icon: mdi:signal-variant
